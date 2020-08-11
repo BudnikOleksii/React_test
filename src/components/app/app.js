@@ -32,14 +32,13 @@ export default class App extends Component {
 
     deleteItem(id) {
         this.setState(({ data }) => {
-            const index = data.findIndex(elem => elem.id === id);
-            // const newArr = data.filter((item) => item.id !== id);
-
-            const newArr = [...data.slice(0, index), ...data.slice(index +1)];
+            // const index = data.findIndex(elem => elem.id === id);
+            // const newArr = [...data.slice(0, index), ...data.slice(index +1)];
+            const newArr = data.filter((item) => item.id !== id);
 
             return {
                 data: newArr
-            }
+            };
         });
     }
 
@@ -48,7 +47,7 @@ export default class App extends Component {
             label: body,
             important: false,
             id: this.maxId++
-        }
+        };
 
         this.setState(({ data }) => {
             const newArr = [...data, newItem];
@@ -57,34 +56,29 @@ export default class App extends Component {
             }
         });
     }
-    
-    onToggleImportant(id) {
-        this.setState(({ data }) => {
-            const index = data.findIndex(elem => elem.id === id);
 
-            const old = data[index];
-            const newItem = {...old, important: !old.important};
+	changeStateItem(id, item) {
+		this.setState(({data}) => {
+			const index = data.findIndex(elem => elem.id === id);
+	
+			const old = data[index];
+			const newItem = {...old, [item]: !old[item]};
+	
+			const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+	
+			return {
+				data: newArr
+			};
+		});
+	}
 
-            const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            return {
-                data: newArr
-            }
-        }); 
-    }
-    
-    onToggleLiked(id) {
-        this.setState(({ data }) => {
-            const index = data.findIndex(elem => elem.id === id);
+	onToggleImportant(id) {
+		this.changeStateItem(id, 'important');
+	}
 
-            const old = data[index];
-            const newItem = {...old, like: !old.like};
-
-            const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            return {
-                data: newArr
-            }
-        }); 
-    }
+	onToggleLiked(id) {
+		this.changeStateItem(id, 'like');
+	}
 
     searchPost(items, term) {
         if (term.length === 0) {
@@ -93,6 +87,7 @@ export default class App extends Component {
 
         return items.filter((item) => {
             return item.label.indexOf(term) > -1;
+            // return item.label.includes(term);
         });
     }
 
